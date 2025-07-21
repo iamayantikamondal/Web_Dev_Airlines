@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .confirmation-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .confirmation-message {
+            border: 1px solid #ddd;
+            padding: 40px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container confirmation-container">
+        <div class="confirmation-message">
+            <h1>Booking Confirmed!</h1>
+            <p>Your tickets have been successfully booked.</p>
+            <p><b>Passenger Name:</b> <span id="passengerName"></span></p>
+            <p><b>Tickets Booked:</b> <span id="tickets"></span></p>
+            <p><b>Total Price:</b> <span id="price"></span></p>
+            <p><b>Transaction ID:</b> <span id="transactionId"></span></p>
+            <p><b>Payment Method:</b> <span id="paymentMethod"></span></p>
+            <a href="index.html" class="btn btn-primary">Go Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Function to generate a random transaction ID
+        function generateTransactionId() {
+            return 'TXN-' + Math.floor(Math.random() * 9000000 + 1000000); // Generate a random 7-digit number
+        }
+
+        // Get the booking details from localStorage (or sessionStorage)
+        const passengerName = localStorage.getItem('passengerName') || 'John Doe';  // Default if not found
+        const tickets = localStorage.getItem('tickets') || '1';  // Default to 1 ticket if not found
+        const price = localStorage.getItem('price') || '100';  // Default price if not found
+        const paymentMethod = localStorage.getItem('paymentMethod') || 'Credit Card';  // Default to 'Credit Card'
+
+        // Generate and store a random transaction ID if it's not already set
+        let transactionId = localStorage.getItem('transactionId');
+        if (!transactionId) {
+            transactionId = generateTransactionId();
+            localStorage.setItem('transactionId', transactionId);  // Save the generated transaction ID
+        }
+
+        // Display the booking details
+        document.getElementById('passengerName').textContent = passengerName;
+        document.getElementById('tickets').textContent = tickets;
+        document.getElementById('price').textContent = price;  // Display the price
+        document.getElementById('transactionId').textContent = transactionId;  // Display transaction ID
+        document.getElementById('paymentMethod').textContent = paymentMethod;  // Display payment method
+
+        // Clear the localStorage after displaying the confirmation
+        localStorage.clear();  // Clear all stored data after confirmation
+    </script>
+</body>
+
+</html>
