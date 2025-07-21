@@ -1,0 +1,77 @@
+<!-- transaction.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transaction</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+  <style>
+    .transaction-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .transaction-details {
+      border: 1px solid #ddd;
+      padding: 40px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container transaction-container">
+    <div class="transaction-details">
+      <h2>Transaction Details</h2>
+      <p><b>Flight:</b> <span id="flightName"></span></p>
+      <p><b>Passenger Name:</b> <span id="passengerName"></span></p>
+      <p><b>Tickets:</b> <span id="tickets"></span></p>
+      <p><b>Total Price:</b> $<span id="totalPrice"></span></p>
+
+      <div class="form-group">
+        <label for="paymentMethod">Select Payment Method:</label>
+        <select id="paymentMethod" class="form-control">
+          <option value="Credit Card">Credit Card</option>
+          <option value="Debit Card">Debit Card</option>
+          <option value="PayPal">PayPal</option>
+        </select>
+      </div>
+
+      <button id="confirmPaymentBtn" class="btn btn-success">Confirm and Book</button>
+    </div>
+  </div>
+
+  <script>
+    const flight = JSON.parse(localStorage.getItem("selectedFlight"));
+    const passenger = localStorage.getItem("passengerName");
+    const tickets = localStorage.getItem("tickets");
+
+    if (!flight || !passenger || !tickets) {
+      alert("Missing booking details. Redirecting...");
+      window.location.href = "index.html";
+    }
+
+    const total = flight.price * tickets;
+
+    document.getElementById("flightName").textContent = flight.flight_name;
+    document.getElementById("passengerName").textContent = passenger;
+    document.getElementById("tickets").textContent = tickets;
+    document.getElementById("totalPrice").textContent = total;
+
+    document.getElementById("confirmPaymentBtn").addEventListener("click", () => {
+      const paymentMethod = document.getElementById("paymentMethod").value;
+      const transactionId = "TX" + Math.floor(Math.random() * 1000000);
+
+      localStorage.setItem("paymentMethod", paymentMethod);
+      localStorage.setItem("transactionId", transactionId);
+      localStorage.setItem("price", total);
+
+      window.location.href = "booking.html";
+    });
+  </script>
+</body>
+</html>
