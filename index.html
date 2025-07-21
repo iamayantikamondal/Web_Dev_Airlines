@@ -1,0 +1,137 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Airline Management System</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+  <style>
+    #flightResults { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+    .flight-card {
+      width: 18rem;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center mt-4">Airline Management System</h1>
+
+    <!-- Dropdowns -->
+    <div class="form-group">
+      <label for="departureCity">From:</label>
+      <select id="departureCity" class="form-control"><option value="">Select Departure City</option></select>
+    </div>
+
+    <div class="form-group">
+      <label for="arrivalCity">To:</label>
+      <select id="arrivalCity" class="form-control"><option value="">Select Arrival City</option></select>
+    </div>
+
+    <div class="form-group">
+      <label for="departureTime">Departure Date:</label>
+      <input type="date" id="departureTime" class="form-control" />
+    </div>
+
+    <button id="searchFlightsBtn" class="btn btn-primary">Search Flights</button>
+
+    <!-- Flight Results -->
+    <h3 class="mt-4">Available Flights</h3>
+    <div id="flightResults"></div>
+
+    <!-- Passenger -->
+    <h3 class="mt-4">Passenger Details</h3>
+    <div class="form-group">
+      <label for="passengerName">Passenger Name:</label>
+      <input type="text" id="passengerName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="tickets">Number of Tickets (1–4):</label>
+      <input type="number" id="tickets" class="form-control" />
+    </div>
+
+    <button id="bookTicketBtn" class="btn btn-success" disabled>Proceed to Payment</button>
+  </div>
+
+  <script>
+    const cities = [
+      { id: 1, name: "Delhi" },
+      { id: 2, name: "Kolkata" },
+      { id: 3, name: "Mumbai" }
+    ];
+
+    const dep = document.getElementById("departureCity");
+    const arr = document.getElementById("arrivalCity");
+
+    cities.forEach(c => {
+      const opt1 = new Option(c.name, c.id);
+      const opt2 = new Option(c.name, c.id);
+      dep.add(opt1);
+      arr.add(opt2);
+    });
+
+    let availableFlights = [];
+
+    document.getElementById("searchFlightsBtn").addEventListener("click", () => {
+      const from = dep.value;
+      const to = arr.value;
+      const date = document.getElementById("departureTime").value;
+
+      if (!from || !to || !date) {
+        alert("Please select all fields.");
+        return;
+      }
+
+      // Simulated flight data
+      availableFlights = [
+        { id: 1, flight_name: "AirJet 101", model_number: "A320", departure_city_name: "Delhi", arrival_city_name: "Mumbai", departure_time: date, price: 150 },
+        { id: 2, flight_name: "SkyLine 202", model_number: "B737", departure_city_name: "Delhi", arrival_city_name: "Mumbai", departure_time: date, price: 180 }
+      ];
+
+      const results = document.getElementById("flightResults");
+      results.innerHTML = "";
+
+      availableFlights.forEach(flight => {
+        const div = document.createElement("div");
+        div.className = "flight-card";
+        div.innerHTML = `
+          <h5>${flight.flight_name}</h5>
+          <p>Model: ${flight.model_number}<br>From: ${flight.departure_city_name}<br>To: ${flight.arrival_city_name}<br>Departure: ${flight.departure_time}<br>Price: $${flight.price}</p>
+          <button class="btn btn-outline-primary selectFlightBtn" data-id="${flight.id}">Select Flight</button>
+        `;
+        results.appendChild(div);
+      });
+
+      document.querySelectorAll(".selectFlightBtn").forEach(btn => {
+        btn.addEventListener("click", e => {
+          const id = parseInt(e.target.getAttribute("data-id"));
+          const selectedFlight = availableFlights.find(f => f.id === id);
+          localStorage.setItem("selectedFlight", JSON.stringify(selectedFlight));
+          document.getElementById("bookTicketBtn").disabled = false;
+        });
+      });
+    });
+
+    document.getElementById("bookTicketBtn").addEventListener("click", () => {
+      const name = document.getElementById("passengerName").value.trim();
+      const tickets = parseInt(document.getElementById("tickets").value);
+
+      if (!name || !tickets || tickets < 1 || tickets > 4) {
+        alert("Please enter valid passenger info and ticket count (1-4).");
+        return;
+      }
+
+      localStorage.setItem("passengerName", name);
+      localStorage.setItem("tickets", tickets);
+      window.location.href = "transaction.html";
+    });
+  </script>
+</body>
+</html>
